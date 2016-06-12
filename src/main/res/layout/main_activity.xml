@@ -13,56 +13,56 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/fetch_address_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="fetchAddressButtonHandler"
-        android:text="@string/fetch_address" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-
-
-    <ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:id="@+id/scr">
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".MainActivity">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/buttonColor"
-            android:id="@+id/edit"
-            android:layout_below="@+id/location_address_view"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-    </ScrollView>
+        <Button
+            android:id="@+id/fetch_address_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:onClick="fetchAddressButtonHandler"
+            android:text="@string/fetch_address" />
 
-    <TextView
-        android:id="@+id/location_address_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scr"
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
 
-        android:layout_marginTop="@dimen/text_margin_top"
-        android:textSize="@dimen/default_text_size" />
 
-</RelativeLayout>
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/buttonColor"
+                android:id="@+id/edit"
+                android:inputType="text"
+                android:layout_below="@+id/location_address_view"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+
+        <TextView
+            android:id="@+id/location_address_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_address_view"
+
+            android:layout_marginTop="@dimen/text_margin_top"
+            android:textSize="@dimen/default_text_size" />
+
+    </RelativeLayout>
+</ScrollView>

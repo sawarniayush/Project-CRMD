@@ -16,6 +16,7 @@
 
 package com.example.android.splash;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.location.Location;
@@ -23,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -262,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void displayAddressOutput() {
         mLocationAddressTextView.setText(mAddressOutput);
 
+
     }
 
     /**
@@ -275,10 +278,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mProgressBar.setVisibility(ProgressBar.GONE);
             mFetchAddressButton.setEnabled(true);
-            EditText et=(EditText)findViewById(R.id.edit);
-            String msg=et.getText().toString();
-            String locn=mLocationAddressTextView.getText().toString();
-            BackgroundTask bktask=new BackgroundTask(MainActivity.this);
+
 
         }
     }
@@ -321,7 +321,16 @@ public class MainActivity extends AppCompatActivity implements
             // Show a toast message if an address was found.
             if (resultCode == Constants.SUCCESS_RESULT) {
                 showToast(getString(R.string.address_found));
+                EditText et=(EditText)findViewById(R.id.edit);
+                String msg= et.getText().toString();
+                String loc=mLocationAddressTextView.getText().toString();
+                BackgroundTask bktask=new BackgroundTask(MainActivity.this);
+                TelephonyManager tm=(TelephonyManager)MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
+                String imei=tm.getDeviceId();
+                //Log.v("MainActivity",imei+msg+loc);
+                bktask.execute("gps",imei,msg,loc);
             }
+
 
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
             mAddressRequested = false;

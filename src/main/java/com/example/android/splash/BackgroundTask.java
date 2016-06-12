@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.widget.EditText;
 
 import org.json.JSONArray;
@@ -35,7 +36,8 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
     Activity activity;
     //String imei="";
     String register_url = "http://192.168.252.50/GPSAttendance/welcome/register"; // (name of the site) "http://192.168.X.X(ip of my comp or any other site)/directory name/php script
-    String login_url = "http://192.168.252.50/GPSAttendance/welcome/login"; // same as above with link for the login script "http://192.168.X.X(ip of my comp or any other site)/directory name/php script
+    String login_url = "http://192.168.252.50/GPSAttendance/welcome/login";
+    String gps_url = "http://192.168.252.50/GPSAttendance/welcome/report";
     AlertDialog.Builder builder;  // to alert the user
     ProgressDialog progressDialog;  // to show the progress
 
@@ -100,7 +102,7 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
                 }
                 httpURLConnection.disconnect();
                 try {
-                    Thread.sleep(5000); // to give a pause for the "connecting to  the server" effect
+                    Thread.sleep(500); // to give a pause for the "connecting to  the server" effect
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -132,7 +134,7 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
                 password = params[2];
                 String data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8") + "&" +
                         URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8") + "&" +
-                        URLEncoder.encode("imei", "UTF-8") + "=" + URLEncoder.encode(params[3                                                                                                                                                                                                                                                                                                                                        ], "UTF-8");
+                        URLEncoder.encode("imei", "UTF-8") + "=" + URLEncoder.encode(params[3], "UTF-8");
                 bufferedWriter.write(data);
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -149,7 +151,7 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
                 }
                 httpURLConnection.disconnect();
                 try {
-                    Thread.sleep(5000); // to give a pause for the "connecting to  the server" effect
+                    Thread.sleep(500); // to give a pause for the "connecting to  the server" effect
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -162,7 +164,65 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
                 e.printStackTrace();
             }
 
+        } else if (method.equals("gps")) { // if params[0] is equal to "login"
+            /*
+             *to send the username and password to the server and get the response from the server
+             * if the response is positive we will transit to the home activity
+             * otherwise we need to display an alertDialog
+             */
+            try {
+                URL url = new URL(gps_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+                String imeigps, message, location;
+                imeigps = params[1];
+                message = params[2];
+                location = params[3];
+                String data = URLEncoder.encode("imei", "UTF-8") + "=" + URLEncoder.encode(imeigps, "UTF-8") + "&" +
+                        URLEncoder.encode("Report", "UTF-8") + "=" + URLEncoder.encode(message, "UTF-8") + "&" +
+                        URLEncoder.encode("location", "UTF-8") + "=" + URLEncoder.encode(location, "UTF-8");
+
+                bufferedWriter.write(data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+                //Log.v("Back",imeigps+message+location);
+                // output stream has been used to send data to the server
+                /*
+                 * Now the response from the server will be in the form of json and we need to decode it
+                 */
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line = "";  // just a variable to read data from each line
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line + "\n");
+                }
+                httpURLConnection.disconnect();
+                try {
+                    Thread.sleep(500); // to give a pause for the "connecting to  the server" effect
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return stringBuilder.toString().trim();
+            } catch (MalformedURLException e) {
+                Log.v("mal","HEre");
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                Log.v("protocol","HEre");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.v("IO","HEre");
+                e.printStackTrace();
+            }
+
         }
+        String error_message = "Some Error has occurred. Please check you internet connection.";
+
         return null; // this might be causing the shutdown of app
     }
 
@@ -197,10 +257,10 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
             String message = JO.getString("message"); // message as the key, getString will return the value from the key:value pair
             if (code.equals("reg_true")) // reg_true that means registration success, so corresponding message will be displayed: (here) it is a random string ("Hurray!") (to be changed)
             {
-                showDialog("Registeration Success", message, code);
+                showDialog("Registration Success", message, code);
             } else if (code.equals("reg_false"))// reg_false that means registration failure, so corresponding message will be displayed: (here) it is a random string ("Failed!") (to be changed)
             {
-                showDialog("Registeration Failed", message, code);
+                showDialog("Registration Failed", message, code);
             } else if (code.equals("login_true")) {
                 Intent intent = new Intent(activity, HomeActivity.class);
                 // to attach message to the intent from  the server
@@ -208,12 +268,17 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
                 activity.startActivity(intent);
             } else if (code.equals("login_false")) {
                 showDialog("Login Error", message, code);
-            }
+            } else if (code.equals("report_true")) {
 
+                showDialog("Submission Successful!", message, code);
+            } else if (code.equals("report_false")) {
+                showDialog("Submission error:", message, code);
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
 
 
     }
@@ -248,8 +313,26 @@ public class BackgroundTask extends AsyncTask<String, Void, String> {
                     dialogInterface.dismiss();
                 }
             });
+        } else if (code.equals("report_false")) {
+            // if loginn fails then we need to empty the username and password fields
+            builder.setMessage(message);
+            builder.setPositiveButton("Retry", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 
-
+                    dialogInterface.dismiss();
+                }
+            });
+        } else if (code.equals("report_true")) {
+            // if loginn fails then we need to empty the username and password fields
+            builder.setMessage(message);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    activity.finish();
+                }
+            });
         }
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
