@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.splash">
 
-<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
 
     <application
@@ -12,34 +13,51 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.google.android.gms.version"
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:screenOrientation = "nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.default" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".Splash">
+        <activity
+            android:name=".Splash"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:screenOrientation = "nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".HomeActivity"></activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:screenOrientation = "nosensor" />
+        <activity
+            android:name=".HomeActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:screenOrientation = "nosensor""></activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:screenOrientation = "nosensor">
 
         </activity>
+
         <service
             android:name=".FetchAddressIntentService"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

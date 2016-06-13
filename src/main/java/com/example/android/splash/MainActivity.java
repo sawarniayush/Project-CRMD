@@ -264,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void displayAddressOutput() {
         mLocationAddressTextView.setText(mAddressOutput);
 
-
     }
 
     /**
@@ -278,6 +277,14 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             mProgressBar.setVisibility(ProgressBar.GONE);
             mFetchAddressButton.setEnabled(true);
+            // code to be transferred
+            EditText et=(EditText)findViewById(R.id.edit);
+            String msg= et.getText().toString();
+            String loc=mLocationAddressTextView.getText().toString();
+            BackgroundTask bktask=new BackgroundTask(MainActivity.this);
+            TelephonyManager tm=(TelephonyManager)MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
+            String imei=tm.getDeviceId();
+            bktask.execute("gps",imei,msg,loc);
 
 
         }
@@ -321,16 +328,7 @@ public class MainActivity extends AppCompatActivity implements
             // Show a toast message if an address was found.
             if (resultCode == Constants.SUCCESS_RESULT) {
                 showToast(getString(R.string.address_found));
-                EditText et=(EditText)findViewById(R.id.edit);
-                String msg= et.getText().toString();
-                String loc=mLocationAddressTextView.getText().toString();
-                BackgroundTask bktask=new BackgroundTask(MainActivity.this);
-                TelephonyManager tm=(TelephonyManager)MainActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
-                String imei=tm.getDeviceId();
-                //Log.v("MainActivity",imei+msg+loc);
-                bktask.execute("gps",imei,msg,loc);
             }
-
 
             // Reset. Enable the Fetch Address button and stop showing the progress bar.
             mAddressRequested = false;

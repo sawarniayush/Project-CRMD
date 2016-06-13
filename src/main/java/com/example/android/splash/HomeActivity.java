@@ -1,9 +1,8 @@
 package com.example.android.splash;
 
 import android.content.Intent;
-import android.support.v4.app.ShareCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +17,7 @@ public class HomeActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.welcome_txt);
         String message = getIntent().getStringExtra("message");
         textView.setText(message);
+
 
 
     }
